@@ -1,0 +1,58 @@
+Source: libr3
+Priority: optional
+Maintainer: ChangZhuo Chen (陳昌倬) <czchen@gmail.com>
+Build-Depends:
+ debhelper (>= 9),
+ automake,
+ autotools-dev,
+ check,
+ libpcre3-dev,
+ libtool,
+ pkg-config
+Standards-Version: 3.9.5
+Section: libs
+Homepage: https://github.com/c9s/r3
+#Vcs-Git: git://git.debian.org/collab-maint/libr3-0.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/libr3-0.git;a=summary
+XS-Testsuite: autopkgtest
+
+Package: libr3-dev
+Section: libdevel
+Architecture: any
+Depends:
+ ${misc:Depends},
+ libr3-0 (= ${binary:Version})
+Description: High-performance URL router library (development files)
+ R3 is an URL router library with high performance, thus, it's implemented in
+ C.  It compiles your route paths into a prefix trie. By using the constructed
+ prefix trie in the start-up time, you can dispatch routes with efficiency.
+ .
+ This package contains development files for libr3.
+
+Package: libr3-0
+Provides: libr3
+Multi-Arch: same
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: High-performance URL router library
+ R3 is an URL router library with high performance, thus, it's implemented in
+ C.  It compiles your route paths into a prefix trie. By using the constructed
+ prefix trie in the start-up time, you can dispatch routes with efficiency.
+
+Package: libr3-dbg
+Section: debug
+Priority: extra
+Multi-Arch: same
+Architecture: any
+Depends:
+ ${misc:Depends},
+ libr3-0 (= ${binary:Version})
+Description: High-performance URL router library (debug symbols)
+ R3 is an URL router library with high performance, thus, it's implemented in
+ C.  It compiles your route paths into a prefix trie. By using the constructed
+ prefix trie in the start-up time, you can dispatch routes with efficiency.
+ .
+ This package contains debug symbols for libr3.

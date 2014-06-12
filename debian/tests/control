@@ -1,0 +1,2 @@
+tests: build
+Depends: libr3-dev, build-essential, pkg-config
