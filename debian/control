@@ -12,8 +12,8 @@ Build-Depends:
 Standards-Version: 3.9.5
 Section: libs
 Homepage: https://github.com/c9s/r3
-#Vcs-Git: git://git.debian.org/collab-maint/libr3-0.git
-#Vcs-Browser: http://git.debian.org/?p=collab-maint/libr3-0.git;a=summary
+Vcs-Git: git://github.com/czchen/debian-libr3
+Vcs-Browser: https://github.com/czchen/debian-libr3
 XS-Testsuite: autopkgtest
 
 Package: libr3-dev
