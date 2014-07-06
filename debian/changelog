@@ -1,3 +1,10 @@
+libr3 (1.3.1-2) unstable; urgency=medium
+
+  * Update Vcs-* fields
+  * Let libr3-dev depend on libpcre3-dev
+
+ -- ChangZhuo Chen (陳昌倬) <czchen@gmail.com>  Sun, 06 Jul 2014 19:31:16 +0800
+
 libr3 (1.3.1-1) unstable; urgency=medium
 
   * Initial release (Closes: #748748)
