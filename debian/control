@@ -21,7 +21,8 @@ Section: libdevel
 Architecture: any
 Depends:
  ${misc:Depends},
- libr3-0 (= ${binary:Version})
+ libr3-0 (= ${binary:Version}),
+ libpcre3-dev
 Description: High-performance URL router library (development files)
  R3 is an URL router library with high performance, thus, it's implemented in
  C.  It compiles your route paths into a prefix trie. By using the constructed
