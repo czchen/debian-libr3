@@ -1,0 +1,26 @@
+Description: Fix pcre_exec's return type
+
+ According to PCRE_EXEC(3) pcre_exec returns int.
+
+ The original code uses char but char could be either signed or
+ unsigned. On armel and sparc this caused segment fault because
+ the (rc < 0) error checking was optimized out.
+---
+The information above should follow the Patch Tagging Guidelines, please
+checkout http://dep.debian.net/deps/dep3/ to learn about the format. Here
+are templates for supplementary fields that you might want to add:
+
+Bug: https://github.com/c9s/r3/pull/72
+Bug-Debian: http://bugs.debian.org/754698
+
+--- libr3-1.3.1.orig/src/node.c
++++ libr3-1.3.1/src/node.c
+@@ -323,7 +323,7 @@ node * r3_tree_matchl(const node * n, co
+         char *substring_start = NULL;
+         int   substring_length = 0;
+         int   ov[ n->ov_cnt ];
+-        char rc;
++        int   rc;
+ 
+         info("pcre matching %s on %s\n", n->combined_pattern, path);
+ 
