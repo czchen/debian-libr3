@@ -8,7 +8,7 @@ License: MIT
 
 Files: 3rdparty/*
 Copyright: 2009-2010, Salvatore Sanfilippo <antirez at gmail dot com>
-License: BSD
+License: BSD-3-clause
 
 Files: debian/*
 Copyright: 2014 ChangZhuo Chen (陳昌倬) <czchen@gmail.com>
@@ -33,7 +33,7 @@ License: MIT
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 
-License: BSD
+License: BSD-3-clause
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
  are met:
