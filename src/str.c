@@ -1,6 +1,6 @@
 /*
  * str.c
- * Copyright (C) 2014 c9s <c9s@c9smba.local>
+ * Copyright (C) 2014 c9s <yoanlin93@gmail.com>
  *
  * Distributed under terms of the MIT license.
  */
@@ -207,6 +207,8 @@ void print_indent(int level) {
     }
 }
 
+
+
 #ifndef HAVE_STRDUP
 char *zstrdup(const char *s) {
     char *out;
@@ -221,6 +223,8 @@ char *zstrdup(const char *s) {
     return out;
 }
 #endif
+
+
 
 #ifndef HAVE_STRNDUP
 char *zstrndup(const char *s, int n) {

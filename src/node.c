@@ -60,6 +60,7 @@ node * r3_tree_create(int cap) {
     n->combined_pattern = NULL;
     n->pcre_pattern = NULL;
     n->pcre_extra = NULL;
+    n->data = NULL;
     return n;
 }
 
@@ -280,11 +281,14 @@ node * r3_tree_matchl(const node * n, const char * path, int path_len, match_ent
     unsigned short i;
     unsigned short restlen;
 
+    const char *pp;
+    const char *pp_end;
+
     if (n->compare_type == NODE_COMPARE_OPCODE) {
-        char *pp;
-        const char *pp_end = path + path_len;
-        for (i = 0; i < n->edge_len ; i++ ) {
-            pp = (char*) path;
+        pp_end = path + path_len;
+
+        for (i = n->edge_len; i--; ) {
+            pp = path;
             e = n->edges[i];
             switch(e->opcode) {
                 case OP_EXPECT_NOSLASH:
@@ -320,7 +324,7 @@ node * r3_tree_matchl(const node * n, const char * path, int path_len, match_ent
     // if the pcre_pattern is found, and the pointer is not NULL, then it's
     // pcre pattern node, we use pcre_exec to match the nodes
     if (n->pcre_pattern) {
-        char *substring_start = NULL;
+        const char *substring_start = NULL;
         int   substring_length = 0;
         int   ov[ n->ov_cnt ];
         char rc;
@@ -357,28 +361,53 @@ node * r3_tree_matchl(const node * n, const char * path, int path_len, match_ent
         }
 
 
-        for (i = 1; i < rc; i++)
-        {
-            substring_start = ((char*) path) + ov[2*i];
-            substring_length = ov[2*i+1] - ov[2*i];
-            // info("%2d: %.*s\n", i, substring_length, substring_start);
 
-            if ( substring_length > 0) {
-                restlen = path_len - ov[1]; // fully match to the end
-                // info("matched item => restlen:%d edges:%d i:%d\n", restlen, n->edge_len, i);
+        restlen = path_len - ov[1]; // if it's fully matched to the end (rest string length)
 
+        if (restlen == 0 ) {
+            // Check the substring to decide we should go deeper on which edge 
+            for (i = 1; i < rc; i++)
+            {
+                substring_length = ov[2*i+1] - ov[2*i];
+
+                // if it's not matched for this edge, just skip them quickly
+                if (substring_length == 0)
+                    continue;
+
+                substring_start = path + ov[2*i];
                 e = n->edges[i - 1];
 
                 if (entry && e->has_slug) {
                     // append captured token to entry
                     str_array_append(entry->vars , zstrndup(substring_start, substring_length));
                 }
-                if (restlen == 0 ) {
-                    return e->child && e->child->endpoint > 0 ? e->child : NULL;
-                }
-                // get the length of orginal string: $0
-                return r3_tree_matchl( e->child, path + (ov[1] - ov[0]), restlen, entry);
+
+                // since restlen == 0 return the edge quickly.
+                return e->child && e->child->endpoint > 0 ? e->child : NULL;
             }
+        }
+
+
+        // Check the substring to decide we should go deeper on which edge 
+        for (i = 1; i < rc; i++)
+        {
+            substring_length = ov[2*i+1] - ov[2*i];
+
+            // if it's not matched for this edge, just skip them quickly
+            if ( substring_length == 0) {
+                continue;
+            }
+
+            substring_start = path + ov[2*i];
+            e = n->edges[i - 1];
+
+            if (entry && e->has_slug) {
+                // append captured token to entry
+                str_array_append(entry->vars , zstrndup(substring_start, substring_length));
+            }
+
+            // get the length of orginal string: $0
+            return r3_tree_matchl( e->child, path + (ov[1] - ov[0]), restlen, entry);
         }
         // does not match
         return NULL;
@@ -398,10 +427,10 @@ node * r3_tree_matchl(const node * n, const char * path, int path_len, match_ent
 
 route * r3_tree_match_route(const node *tree, match_entry * entry) {
     node *n;
+    int i;
     n = r3_tree_match_entry(tree, entry);
     if (n && n->routes && n->route_len > 0) {
-        int i;
-        for (i = 0; i < n->route_len ; i++ ) {
+        for (i = n->route_len; i--; ) {
             if ( r3_route_cmp(n->routes[i], entry) == 0 ) {
                 return n->routes[i];
             }
@@ -411,12 +440,12 @@ route * r3_tree_match_route(const node *tree, match_entry * entry) {
 }
 
 inline edge * r3_node_find_edge_str(const node * n, const char * str, int str_len) {
-    unsigned short i = 0;
     char firstbyte = *str;
-    for (; i < n->edge_len ; i++ ) {
+    unsigned int i;
+    for (i = n->edge_len; i--; ) {
         if ( firstbyte == *(n->edges[i]->pattern) ) {
-            info("matching '%s' with '%s'\n", str, node_edge_pattern(n,i) );
-            if ( strncmp( node_edge_pattern(n,i), str, node_edge_pattern_len(n,i) ) == 0 ) {
+            info("matching '%s' with '%s'\n", str, r3_node_edge_pattern(n,i) );
+            if ( strncmp( r3_node_edge_pattern(n,i), str, r3_node_edge_pattern_len(n,i) ) == 0 ) {
                 return n->edges[i];
             }
             return NULL;
@@ -440,12 +469,8 @@ node * r3_node_create() {
     n->combined_pattern = NULL;
     n->pcre_pattern = NULL;
     n->pcre_extra = NULL;
+    n->data = NULL;
     return n;
-}
-
-
-route * r3_route_create(const char * path) {
-    return r3_route_createl(path, strlen(path));
 }
 
 void r3_route_free(route * route) {
@@ -488,12 +513,6 @@ route * r3_tree_insert_routel_ex(node *tree, int method, const char *path, int p
     return r;
 }
 
-
-
-node * r3_tree_insert_pathl(node *tree, const char *path, int path_len, void * data)
-{
-    return r3_tree_insert_pathl_ex(tree, path, path_len, NULL , data, NULL);
-}
 
 
 /**
@@ -697,17 +716,23 @@ node * r3_tree_insert_pathl_ex(node *tree, const char *path, int path_len, route
         } else {
             // there are no more path to insert
 
-            // see if there is an endpoint already
-            if (e->child->endpoint > 0) {
-                // XXX: return an error code instead of NULL
-                return NULL;
-            }
-            e->child->endpoint++; // make it as an endpoint
-            e->child->data = data;
+            // see if there is an endpoint already, we should n't overwrite the data on child.
+            // but we still need to append the route.
+
             if (route) {
                 route->data = data;
                 r3_node_append_route(e->child, route);
+                e->child->endpoint++; // make it as an endpoint
+                return e->child;
             }
+
+            // insertion without route
+            if (e->child->endpoint > 0) {
+                // TODO: return an error code instead of NULL
+                return NULL;
+            }
+            e->child->endpoint++; // make it as an endpoint
+            e->child->data = data; // set data
             return e->child;
         }
 
@@ -777,15 +802,9 @@ void r3_tree_dump(const node * n, int level) {
  *
  * -1 == different route
  */
-int r3_route_cmp(const route *r1, const match_entry *r2) {
+inline int r3_route_cmp(const route *r1, const match_entry *r2) {
     if (r1->request_method != 0) {
         if (0 == (r1->request_method & r2->request_method) ) {
-            return -1;
-        }
-    }
-
-    if ( r1->path && r2->path ) {
-        if ( strcmp(r1->path, r2->path) != 0 ) {
             return -1;
         }
     }

@@ -1,6 +1,6 @@
 /*
  * r3_gvc.h
- * Copyright (C) 2014 c9s <c9s@c9smba.local>
+ * Copyright (C) 2014 c9s <yoanlin93@gmail.com>
  *
  * Distributed under terms of the MIT license.
  */
@@ -11,7 +11,7 @@
 #include <gvc.h>
 #include "r3.h"
 
-void r3_tree_build_ag_nodes(Agraph_t * g, Agnode_t * ag_parent_node, const node * n, int node_cnt);
+void r3_tree_build_ag_nodes(Agraph_t * g, Agnode_t * ag_parent_node, const node * n, int * node_cnt);
 
 int r3_tree_render(const node * tree, const char *layout, const char * format, FILE *fp);
 
