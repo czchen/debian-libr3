@@ -1,6 +1,6 @@
 /*
  * r3.h
- * Copyright (C) 2014 c9s <c9s@c9smba.local>
+ * Copyright (C) 2014 c9s <yoanlin93@gmail.com>
  *
  * Distributed under terms of the MIT license.
  */
@@ -31,8 +31,8 @@ struct _node {
     // edge  ** edge_table;
 
     // edges are mostly less than 255
-    unsigned char    edge_len;
     unsigned char    compare_type; // compare_type: pcre, opcode, string
+    unsigned char    edge_len;
     unsigned char    endpoint; // endpoint, should be zero for non-endpoint nodes
     unsigned char    ov_cnt; // capture vector array size for pcre
 
@@ -59,15 +59,15 @@ struct _node {
     void * data;
 };
 
-#define node_edge_pattern(node,i) node->edges[i]->pattern
-#define node_edge_pattern_len(node,i) node->edges[i]->pattern_len
+#define r3_node_edge_pattern(node,i) node->edges[i]->pattern
+#define r3_node_edge_pattern_len(node,i) node->edges[i]->pattern_len
 
 struct _edge {
-    char * pattern;
-    node * child;
-    unsigned short pattern_len; // 2 byte
-    unsigned char  opcode; // 1 byte
-    unsigned char  has_slug; // 1 bit
+    char * pattern; // 8 bytes
+    node * child; // 8 bytes
+    unsigned char  pattern_len; // 1 byte
+    unsigned char  opcode:4; // 4 bit
+    unsigned char  has_slug:1; // 1 bit
 };
 
 struct _route {
@@ -126,6 +126,10 @@ edge * r3_node_find_common_prefix(node *n, const char *path, int path_len, int *
 
 node * r3_tree_insert_pathl(node *tree, const char *path, int path_len, void * data);
 
+#define r3_tree_insert_pathl(tree, path, path_len, data) r3_tree_insert_pathl_ex(tree, path, path_len, NULL , data, NULL)
+
+
+
 route * r3_tree_insert_routel(node *tree, int method, const char *path, int path_len, void *data);
 
 route * r3_tree_insert_routel_ex(node *tree, int method, const char *path, int path_len, void *data, char **errstr);
@@ -183,6 +187,9 @@ void r3_route_free(route * route);
 int r3_route_cmp(const route *r1, const match_entry *r2);
 
 route * r3_tree_match_route(const node *n, match_entry * entry);
+
+#define r3_route_create(p) r3_route_createl(p, strlen(p))
+
 
 #define METHOD_GET 2
 #define METHOD_POST 2<<1

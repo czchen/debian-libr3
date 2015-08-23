@@ -1,6 +1,6 @@
 /*
  * r3_str.h
- * Copyright (C) 2014 c9s <c9s@c9smba.local>
+ * Copyright (C) 2014 c9s <yoanlin93@gmail.com>
  *
  * Distributed under terms of the MIT license.
  */
@@ -21,6 +21,23 @@ char * r3_inside_slug(const char * needle, int needle_len, char *offset, char **
 void str_repeat(char *s, const char *c, int len);
 
 void print_indent(int level);
+
+
+#if _GNU_SOURCE || POSIX_C_SOURCE >= 200809L || _XOPEN_SOURCE >= 700 || __DARWIN_C_LEVEL >= 200809L
+#ifndef HAVE_STRNDUP
+#define HAVE_STRNDUP
+#endif
+#endif
+
+#if _SVID_SOURCE || _BSD_SOURCE \
+    || _XOPEN_SOURCE >= 500 \
+    || _XOPEN_SOURCE && _XOPEN_SOURCE_EXTENDED \
+    || /* Since glibc 2.12: */ _POSIX_C_SOURCE >= 200809L \
+    || __DARWIN_C_LEVEL >= 200809L
+#ifndef HAVE_STRDUP
+#define HAVE_STRDUP
+#endif
+#endif
 
 #ifndef HAVE_STRDUP
 char *strdup(const char *s);

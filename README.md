@@ -156,7 +156,7 @@ if (err != 0) {
 // in your http server handler
 
 // create the match entry for capturing dynamic variables.
-match_entry * entry = match_entry_create("/foo/bar");
+match_entry * entry = match_entry_create("/blog/post");
 entry->request_method = METHOD_GET;
 
 
@@ -164,7 +164,7 @@ route *matched_route = r3_tree_match_route(n, entry);
 matched_route->data; // get the data from matched route
 
 // free the objects at the end
-r3_route_free(r1);
+match_entry_free(entry);
 r3_tree_free(n);
 ```
 
@@ -362,6 +362,14 @@ Install
     ./configure && make
     sudo make install
 
+And we support debian-based distro now!
+
+    sudo apt-get install build-essential autoconf automake libpcre3-dev pkg-config debhelper libtool check
+    mv dist-debian debian
+    dpkg-buildpackage -b -us -uc
+    sudo gdebi ../libr3*.deb
+
+
 #### Run Unit Tests
 
     ./configure --enable-check
@@ -375,14 +383,21 @@ Install
 
     ./configure --with-malloc=jemalloc
 
+ubuntu PPA
+----------------------
+
+The PPA for libr3 can be found in <https://launchpad.net/~r3-team/+archive/libr3-daily>.
 
 Binding For Other Languages
 ---------------------------
 
-* Perl Router::R3 by CindyLinz <https://metacpan.org/pod/Router::R3>
-* Python pyr3 by Lucemia <https://github.com/lucemia/pyr3>
-* Python pyr3 by Thedrow <https://github.com/thedrow/pyr3>
-
+* Perl Router::R3 by @CindyLinz <https://metacpan.org/pod/Router::R3>
+* Python pyr3 by @lucemia <https://github.com/lucemia/pyr3>
+* Python pyr3 by @thedrow <https://github.com/thedrow/pyr3>
+* Haskell r3 by @MnO2 <https://github.com/MnO2/r3>
+* Vala r3-vala by @Ronmi <https://github.com/Ronmi/r3-vala>
+* Node.js node-r3 by @othree <https://github.com/othree/node-r3>
+* Node.js node-libr3 by @caasi <https://github.com/caasi/node-r3>
 
 
 License
