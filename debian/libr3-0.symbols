@@ -17,7 +17,7 @@ libr3.so.0 libr3-0 #MINVER#
  r3_node_has_slug_edges@Base 1.3.1
  r3_pattern_to_opcode@Base 1.3.1
  r3_route_cmp@Base 1.3.1
- r3_route_create@Base 1.3.1
+#MISSING: 1.3.3-1# r3_route_create@Base 1.3.1
  r3_route_createl@Base 1.3.1
  r3_route_free@Base 1.3.1
  r3_slug_check@Base 1.3.1
@@ -33,7 +33,7 @@ libr3.so.0 libr3-0 #MINVER#
  r3_tree_create@Base 1.3.1
  r3_tree_dump@Base 1.3.1
  r3_tree_free@Base 1.3.1
- r3_tree_insert_pathl@Base 1.3.1
+#MISSING: 1.3.3-1# r3_tree_insert_pathl@Base 1.3.1
  r3_tree_insert_pathl_ex@Base 1.3.1
  r3_tree_insert_routel_ex@Base 1.3.1
  r3_tree_match_route@Base 1.3.1
